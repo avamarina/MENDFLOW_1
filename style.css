@@ -1194,3 +1194,29 @@ header {
 		max-width: 300px; /* Ограничиваем максимальную ширину */
 	}
 }
+
+/* Стили для номера телефона */
+.phone-link {
+	margin-left: auto; /* Сдвигаем номер телефона вправо */
+	font-size: 16px;
+	font-weight: 600;
+	color: #fff;
+	text-decoration: none;
+}
+
+.phone-link a {
+	color: #fff;
+	text-decoration: none;
+	transition: color 0.3s ease;
+}
+
+.phone-link a:hover {
+	color: #ffcc00; /* Цвет при наведении */
+}
+
+/* Адаптивные стили для мобильной версии */
+@media (max-width: 768px) {
+	.phone-link {
+		display: none; /* Скрываем номер телефона на мобильной версии */
+	}
+}
