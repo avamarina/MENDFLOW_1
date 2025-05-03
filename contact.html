@@ -20,15 +20,20 @@
 						alt="MendFlow Team"
 					/>
 				</div>
-				<nav>
+				<nav id="navMenu">
 					<ul class="menu">
 						<li><a href="index.html">Главная</a></li>
-						<li><a href="about.html">О нас</a></li>
 						<li><a href="services.html">Услуги</a></li>
-						<li><a href="contact.html" class="active">Контакты</a></li>
-						<a href="tel:+77002601205" class="phone-link">+7 (700) 260-12-05</a>
+						<li><a href="about.html">О нас</a></li>
+						<li><a href="contact.html">Контакты</a></li>
 					</ul>
 				</nav>
+				<div class="burger-menu" id="burgerMenu">
+					<span></span>
+					<span></span>
+					<span></span>
+				</div>
+				ы
 			</div>
 		</header>
 
@@ -75,7 +80,7 @@
 
 				<div class="contact-form">
 					<h3>Напишите нам</h3>
-					<form id="feedbackForm">
+					<form id="feedbackForm" class="contact-page">
 						<input type="text" name="name" placeholder="Ваше имя" required />
 						<input
 							type="tel"

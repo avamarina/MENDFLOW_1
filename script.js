@@ -33,7 +33,37 @@ document.addEventListener('DOMContentLoaded', () => {
 	const botToken = '8011019754:AAEK5vWboIdoPfqZbWf68iFLJ4lsjmRHfUQ' // Новый токен
 	const chatIds = ['1264633700', '987654321'] // Chat ID для вас и друга
 
-	// Обработка формы "Свяжитесь с нами"
+	// Обработка формы "Начать" (модальное окно)
+	const feedbackForm = document.getElementById('feedbackForm')
+	if (feedbackForm) {
+		feedbackForm.addEventListener('submit', async e => {
+			e.preventDefault()
+
+			const formData = new FormData(feedbackForm)
+			const name = formData.get('name')
+			const phone = formData.get('phone')
+
+			// Валидация
+			if (!name || !phone) {
+				alert('Пожалуйста, заполните все поля.')
+				return
+			}
+
+			const message = `*Новая заявка на консультацию*:\n\n👤 Имя: ${name}\n📞 Номер телефона: ${phone}`
+
+			const success = await sendTelegramMessage(botToken, chatIds, message)
+			if (success) {
+				alert('Ваш запрос успешно отправлен!')
+				feedbackForm.reset()
+				const modal = document.getElementById('contactModal')
+				if (modal) modal.style.display = 'none'
+			} else {
+				alert('Ошибка при отправке. Попробуйте снова.')
+			}
+		})
+	}
+
+	// Обработка формы "Свяжитесь с нами" (в footer)
 	const contactForm = document.getElementById('contactForm')
 	if (contactForm) {
 		contactForm.addEventListener('submit', async e => {
@@ -48,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				return
 			}
 
-			const message = `*Новый запрос на связь*:\n\n📞 Номер телефона: ${phone}`
+			const message = `*Новый запрос на связь (Footer)*:\n\n📞 Номер телефона: ${phone}`
 
 			const success = await sendTelegramMessage(botToken, chatIds, message)
 			if (success) {
@@ -60,13 +90,13 @@ document.addEventListener('DOMContentLoaded', () => {
 		})
 	}
 
-	// Обработка формы "Обратная связь"
-	const feedbackForm = document.getElementById('feedbackForm')
-	if (feedbackForm) {
-		feedbackForm.addEventListener('submit', async e => {
+	// Обработка формы "Контакты" (на странице contact.html)
+	const contactPageForm = document.querySelector('#feedbackForm.contact-page')
+	if (contactPageForm) {
+		contactPageForm.addEventListener('submit', async e => {
 			e.preventDefault()
 
-			const formData = new FormData(feedbackForm)
+			const formData = new FormData(contactPageForm)
 			const name = formData.get('name')
 			const phone = formData.get('phone')
 			const messageText = formData.get('message')
@@ -77,18 +107,19 @@ document.addEventListener('DOMContentLoaded', () => {
 				return
 			}
 
-			const message = `*Новая заявка на обратную связь*:\n\n👤 Имя: ${name}\n📞 Номер телефона: ${phone}\n💬 Сообщение: ${messageText}`
+			const message = `*Новый запрос с Contact Page*:\n\n👤 Имя: ${name}\n📞 Номер телефона: ${phone}\n💬 Сообщение: ${messageText}`
 
 			const success = await sendTelegramMessage(botToken, chatIds, message)
 			if (success) {
 				alert('Ваш запрос успешно отправлен!')
-				feedbackForm.reset()
+				contactPageForm.reset()
 			} else {
 				alert('Ошибка при отправке. Попробуйте снова.')
 			}
 		})
 	}
 })
+
 document.addEventListener('DOMContentLoaded', () => {
 	const burgerMenu = document.getElementById('burgerMenu')
 	const navMenu = document.getElementById('navMenu')
@@ -100,6 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		})
 	}
 })
+
 document.addEventListener('DOMContentLoaded', () => {
 	// Открытие и закрытие модального окна
 	const openModalButton = document.getElementById('openModal')
@@ -121,52 +153,35 @@ document.addEventListener('DOMContentLoaded', () => {
 			}
 		})
 	}
+})
 
-	// Отправка данных из формы в Telegram
-	const feedbackForm = document.getElementById('feedbackForm')
-	if (feedbackForm) {
-		feedbackForm.addEventListener('submit', async e => {
-			e.preventDefault()
+document.addEventListener('DOMContentLoaded', function () {
+	const burgerMenu = document.getElementById('burgerMenu')
+	const navMenu = document.getElementById('navMenu')
 
-			const formData = new FormData(feedbackForm)
-			const name = formData.get('name')
-			const phone = formData.get('phone')
+	// Открытие/закрытие меню
+	burgerMenu.addEventListener('click', function () {
+		this.classList.toggle('active')
+		navMenu.classList.toggle('active')
+	})
 
-			// Валидация
-			if (!name || !phone) {
-				alert('Пожалуйста, заполните все поля.')
-				return
-			}
-
-			// Данные для отправки в Telegram
-			const botToken = '8011019754:AAEK5vWboIdoPfqZbWf68iFLJ4lsjmRHfUQ' // Ваш токен бота
-			const chatId = '1264633700' // Ваш Chat ID
-			const message = `*Новая заявка на консультацию*:\n\n👤 Имя: ${name}\n📞 Номер телефона: ${phone}`
-
-			try {
-				const response = await fetch(
-					`https://api.telegram.org/bot${botToken}/sendMessage`,
-					{
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({
-							chat_id: chatId,
-							text: message,
-							parse_mode: 'Markdown',
-						}),
-					}
-				)
-
-				if (response.ok) {
-					alert('Ваш запрос успешно отправлен!')
-					feedbackForm.reset()
-					modal.style.display = 'none'
-				} else {
-					alert('Ошибка при отправке. Попробуйте снова.')
-				}
-			} catch (error) {
-				alert('Произошла ошибка. Проверьте подключение к интернету.')
-			}
+	// Закрытие меню при клике на пункт меню
+	const menuItems = document.querySelectorAll('.menu li a')
+	menuItems.forEach(item => {
+		item.addEventListener('click', function () {
+			burgerMenu.classList.remove('active')
+			navMenu.classList.remove('active')
 		})
-	}
+	})
+
+	// Закрытие меню при клике вне его
+	document.addEventListener('click', function (event) {
+		const isClickInside =
+			navMenu.contains(event.target) || burgerMenu.contains(event.target)
+
+		if (!isClickInside && navMenu.classList.contains('active')) {
+			burgerMenu.classList.remove('active')
+			navMenu.classList.remove('active')
+		}
+	})
 })
